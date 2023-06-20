@@ -18,7 +18,7 @@
 
 1. Клонируйте репозиторий на свой локальный компьютер:
    ```shell
-   git clone https://github.com/your-username/golf-parser.git
+   git clone https://github.com/l-Spook-l/Golf-Store-Parser.git
 
 2. Перейдите в директорию проекта:
    ```shell
