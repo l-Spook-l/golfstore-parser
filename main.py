@@ -19,8 +19,8 @@ def golf_parser():
     # Создание экземпляра класса UserAgent
     user_agent = UserAgent()
     # Генерация случайного User-Agent
-    random_user_agent = user_agent.random
-
+    random_user_agent = user_agent.chrome
+    print(random_user_agent)
     headers = {
         'Authorization': "VhBcHwkNDr7L7fpOi_W7L4AswzosUf557IVNrPz0Npg.eyJpbnN0YW5jZUlkIjoiZDYxZmY2MTUtZTkzMS00ZDlkLWFl"
                          "MTktM2Q4YjdjNzMxM2FiIiwiYXBwRGVmSWQiOiIxMzgwYjcwMy1jZTgxLWZmMDUtZjExNS0zOTU3MWQ5NGRmY2QiLCJt"
@@ -54,7 +54,7 @@ def golf_parser():
         session = requests.session()
         response = session.post(url=url, headers=headers, json=query)
 
-        with open(f'test.{category}2.json', 'w') as file:
+        with open(f'test.{category}.json', 'w') as file:
             file.write(response.text)
 
         print(f'category: {category} id: {id}')

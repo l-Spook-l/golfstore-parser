@@ -35,9 +35,10 @@ def add_to_database():
             number_suffix = 2
 
             for product in data:
+                # Создаем нужный слаг
                 slug = re.sub(r'(^-|-$)|[^a-z0-9]+', '-', product['name'].lower().replace('\'', ''))
-                print('slug первый', slug)
 
+                # Текущее время
                 now = datetime.now()
                 formatted_date = now.strftime("%Y-%m-%d %H:%M:%S.%f")
 
@@ -49,7 +50,6 @@ def add_to_database():
 
                 list_of_identical_products.append(slug)
                 number_suffix = 1
-                print('slug второй', slug)
 
                 try:
                     cursor.execute('''
@@ -68,14 +68,10 @@ def add_to_database():
 
                 product_id = cursor.lastrowid
                 print("Присвоенный ID продукта:", product_id)
-                print(slug, type(slug))
                 media = product['media']
                 image_number = 1
 
                 for id in range(len(media)):
-                    print(id)
-                    print(media[id])
-                    print(media[id]['url'], media[id]['width'], media[id]['height'])
                     cursor.execute('''INSERT INTO store_productphotos (image) VALUES (?)''', (f'photos/product/{slug}_{image_number}.jpg',))
 
                     image_id = cursor.lastrowid
@@ -83,8 +79,10 @@ def add_to_database():
                     cursor.execute('''INSERT INTO store_product_photos (product_id, productphotos_id) VALUES (?, ?) ''',
                                    (product_id, image_id))
 
+                    # Получаем фото по ссылке
                     link = f"https://static.wixstatic.com/media/{media[id]['url']}/v1/fill/w_500,h_500,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/{media[id]['url']}"
 
+                    # Формируем имя для фото
                     filepath = os.path.join('photos', f'{slug}_{image_number}.jpg')
 
                     # Отправляем GET-запрос для загрузки фото
