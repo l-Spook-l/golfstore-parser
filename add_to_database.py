@@ -2,75 +2,106 @@ import json
 import re
 import sqlite3
 from datetime import datetime
-from main import categories
-# https://static.wixstatic.com/media/597f53_deca6a99f24a4d548fc45f0b2288a4c6~mv2.jpg/v1/fill/w_500,h_500,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/597f53_deca6a99f24a4d548fc45f0b2288a4c6~mv2.jpg
+import requests
+import os
+
+categories = {
+    'Golf clubs': 2,
+    'Clothing': 1,
+    'Shoes': 3,
+    'Golf Bags': 5,
+    'Accessories': 6,
+    'Balls': 4,
+}
+
 
 def add_to_database():
-    # for category in categories
-        # with open(f'test.{category}.json', 'r') as file:
-        # json_content = json.loads(file.read())
-        # balls = json_content['data']['catalog']['category']['productsWithMetaData']['list']
-        # for product in balls:
-            # print(product['price'])
-            # print(product['name'])
-            # print(product['media'])
-            # category
-            # slug = re.sub(r'(^-|-$)|[^a-z0-9]+', '-', product['name'].lower().replace('\'', ''))
+    # Устанавливаем соединение с базой данных
+    conn = sqlite3.connect('db.sqlite3')
+    # Создаем курсор для выполнения SQL-запросов
+    cursor = conn.cursor()
 
-    with open('test.Golf clubs.json', 'r') as file:
-        json_content = json.loads(file.read())
-        # print(json_content)
-        # print(json_content['data'])
-        # print(json_content['data']['catalog'])
-        # print(json_content['data']['catalog']['category'])
-        # print(json_content['data']['catalog']['category']['productsWithMetaData'])
-        # print(json_content['data']['catalog']['category']['productsWithMetaData']['list'])
-        balls = json_content['data']['catalog']['category']['productsWithMetaData']['list']
-        # print(type(balls), len(balls))
-        # print(json_content['data']['catalog']['category']['name'])
+    # Если нету папки для фото, создаем её
+    if not os.path.exists('photos'):
+        os.makedirs('photos')
 
-        for product in balls:
-            # print(product)
-            # print(product['price'])
-            print(product['name'], len(product['media']))
-            print(product['media'][0])
+    list_of_identical_products = []
 
-            slug = re.sub(r'(^-|-$)|[^a-z0-9]+', '-', product['name'].lower().replace('\'', ''))
-            # print(slug)
+    for category, category_id in categories.items():
+        with open(f'test.{category}.json', 'r') as file:
+            json_content = json.loads(file.read())
+            data = json_content['data']['catalog']['category']['productsWithMetaData']['list']
 
-            now = datetime.now()
-            formatted_date = now.strftime("%Y-%m-%d %H:%M:%S.%f")
-            # print(formatted_date)
+            number_suffix = 2
 
-    # # ==========================================
-    # # ==========================================
-    # # Устанавливаем соединение с базой данных
-    # conn = sqlite3.connect('db.sqlite3')
-    #
-    # # Создаем курсор для выполнения SQL-запросов
-    # cursor = conn.cursor()
-    #
-    # # Открываем JSON-файл
-    # with open('test.Balls.json') as f:
-    #     data = json.load(f)
-    #
-    # # Перебираем объекты в JSON и выполняем операцию вставки
-    # for item in data:
-    #     # Извлекаем нужные поля из объекта item
-    #     поле1 = item['поле1']
-    #     поле2 = item['поле2']
-    #     ...
-    #
-    #     # Выполняем операцию вставки в таблицу
-    #     cursor.execute('''
-    #         INSERT INTO store_product (поле1, поле2, ...)
-    #         VALUES (?, ?, ...)
-    #     ''', (поле1, поле2, ...))
-    #
-    # # Фиксируем изменения в базе данных
-    # conn.commit()
-    # # Закрываем соединение с базой данных
-    # conn.close()
+            for product in data:
+                slug = re.sub(r'(^-|-$)|[^a-z0-9]+', '-', product['name'].lower().replace('\'', ''))
+                print('slug первый', slug)
+
+                now = datetime.now()
+                formatted_date = now.strftime("%Y-%m-%d %H:%M:%S.%f")
+
+                while slug in list_of_identical_products:
+                    if number_suffix > 10:
+                        raise Exception("Exceeded maximum number of suffix attempts")
+                    number_suffix += 1
+                    slug = f"{slug}-{number_suffix}"
+
+                list_of_identical_products.append(slug)
+                number_suffix = 1
+                print('slug второй', slug)
+
+                try:
+                    cursor.execute('''
+                        INSERT INTO store_product (name, slug, price, time_create, brand_id, category_id, gender_id, type_id)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    ''', (product['name'], slug, product['price'], formatted_date, 0, category_id, 2, 0))
+                except sqlite3.IntegrityError:
+                    # Обработка ошибки IntegrityError
+                    cursor.execute('''
+                        INSERT INTO store_product (name, slug, price, time_create, brand_id, category_id, gender_id, type_id)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    ''', (product['name'], slug, product['price'], formatted_date, 0, category_id, 2, 0))
+                except sqlite3.Error as error:
+                    # Обработка других ошибок SQLite
+                    print("Ошибка SQLite:", error)
+
+                product_id = cursor.lastrowid
+                print("Присвоенный ID продукта:", product_id)
+                print(slug, type(slug))
+                media = product['media']
+                image_number = 1
+
+                for id in range(len(media)):
+                    print(id)
+                    print(media[id])
+                    print(media[id]['url'], media[id]['width'], media[id]['height'])
+                    cursor.execute('''INSERT INTO store_productphotos (image) VALUES (?)''', (f'photos/product/{slug}_{image_number}.jpg',))
+
+                    image_id = cursor.lastrowid
+
+                    cursor.execute('''INSERT INTO store_product_photos (product_id, productphotos_id) VALUES (?, ?) ''',
+                                   (product_id, image_id))
+
+                    link = f"https://static.wixstatic.com/media/{media[id]['url']}/v1/fill/w_500,h_500,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/{media[id]['url']}"
+
+                    filepath = os.path.join('photos', f'{slug}_{image_number}.jpg')
+
+                    # Отправляем GET-запрос для загрузки фото
+                    response = requests.get(link)
+                    response.raise_for_status()
+
+                    # Сохраняем фото на диск
+                    with open(filepath, 'wb') as f:
+                        f.write(response.content)
+
+                    print(f"Фото {slug}_{image_number}.jpg успешно скачано и сохранено в папке 'photos'")
+                    image_number += 1
+                    print('list_of_identical_products', list_of_identical_products)
+    # Фиксируем изменения в базе данных
+    conn.commit()
+    # Закрываем соединение с базой данных
+    conn.close()
 
 
 def main():
