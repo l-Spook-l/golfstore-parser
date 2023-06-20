@@ -1,36 +1,36 @@
-# Парсер для магазина гольфа
+# Golf Store Parser
 
-Это простой парсер для получения данных о товарах из магазина гольфа. Он использует API магазина и сохраняет полученные данные в JSON файлы для каждой категории товаров.
+This is a simple parser for retrieving data about products from a golf store. It utilizes the store's API and saves the retrieved data into JSON files for each product category.
 
-## Описание проекта
+## Project Description
 
-Парсер предназначен для сбора следующей информации о товарах из магазина гольфа:
+The parser is designed to gather the following information about golf store products:
 
-- Название товара
-- Цена
-- Описание
-- Фотографии
-- Другие характеристики
+- Product name
+- Price
+- Description
+- Photos
+- Other specifications
 
-## Установка и использование
+## Installation and Usage
 
-Следуйте инструкциям ниже, чтобы установить и использовать парсер:
+Follow the instructions below to install and use the parser:
 
-1. Клонируйте репозиторий на свой локальный компьютер:
+1. Clone the repository to your local computer:
    ```shell
    git clone https://github.com/l-Spook-l/Golf-Store-Parser.git
 
-2. Перейдите в директорию проекта:
+2. Navigate to the project directory:
    ```shell
    cd golf-parser
    
-3. Установите зависимости:
+3. Install the dependencies:
    ```shell
    pip install -r requirements.txt
    
-4. Откройте файл golf_parser.py в вашем текстовом редакторе.
+4. Open the golf_parser.py file in your text editor.
 
-5. В словаре categories добавьте или измените категории товаров, указав их названия, id категорий и количество товара:
+5. In the categories dictionary, add or modify the product categories by providing their names, category IDs, and quantity of products:
    ```shell
    categories = {
     # Категория, id, количество товара
@@ -42,43 +42,43 @@
     'Balls': ["4839cba0-7843-3dc0-7ff2-9dcc64ff9e9f", 17],
    }
 
-6. Запустите парсер:
+6. Run the parser:
    ```shell
    python main.py
    
-7. Добавьте полученные данныые в базу данных
+7. Add the retrieved data to the database:
    ```shell
    python add_to_database.py
 
-### Примечание:
-Если при запуске парсера возникает ошибка, попробуйте заменить значение заголовка Authorization на свое собственное.
+### Note:
+If you encounter an error when running the parser, try replacing the value of the Authorization header with your own.
 
-### Копирование заголовка Authorization"
-Чтобы скопировать значение заголовка Authorization из браузера, вам понадобится инструмент разработчика браузера. Вот инструкции для нескольких популярных браузеров:
+### Copying the Authorization Header
+To copy the value of the Authorization header from your browser, you will need a browser developer tool. Here are instructions for several popular browsers:
 
 # Google Chrome:
-1. Откройте веб-страницу, для которой вам нужно скопировать заголовок Authorization.
-2. Щелкните правой кнопкой мыши на странице и выберите пункт "Исследовать" или "Просмотреть код элемента". Откроется панель инструментов разработчика.
-3. В панели инструментов разработчика найдите вкладку "Сеть" или "Network" и перейдите на нее.
-4. Обновите страницу, чтобы активировать запись сетевых запросов.
-5. Найдите нужный запрос в списке запросов. Если запросов много, можно воспользоваться поиском или фильтрами для нахождения нужного.
-6. Щелкните на запросе, чтобы открыть его детали.
-7. В разделе "Заголовки" или "Headers" найдите заголовок Authorization. Щелкните на нем правой кнопкой мыши и выберите пункт "Скопировать значение" или аналогичную команду.
+1. Open the webpage for which you need to copy the Authorization header.
+2. Right-click on the page and select "Inspect" or "Inspect Element". This will open the developer tools panel.
+3. In the developer tools panel, find the "Network" tab and switch to it.
+4. Refresh the page to activate the recording of network requests.
+5. Find the relevant request in the request list. If there are many requests, you can use search or filters to locate the desired one.
+6. Click on the request to open its details.
+7. In the "Headers" section, find the Authorization header. Right-click on it and select "Copy value" or a similar command.
 
 # Mozilla Firefox:
-1. Откройте веб-страницу, для которой вам нужно скопировать заголовок Authorization.
-2. Щелкните правой кнопкой мыши на странице и выберите пункт "Исследовать элемент" или "Исследовать". Откроется панель инструментов разработчика.
-3. В панели инструментов разработчика найдите вкладку "Сеть" или "Network" и перейдите на нее.
-4. Обновите страницу, чтобы активировать запись сетевых запросов.
-5. Найдите нужный запрос в списке запросов. Если запросов много, можно воспользоваться поиском или фильтрами для нахождения нужного.
-6. Щелкните на запросе, чтобы открыть его детали.
-7. В разделе "Заголовки" или "Headers" найдите заголовок Authorization. Щелкните на нем правой кнопкой мыши и выберите пункт "Копировать значение" или аналогичную команду.
+1. Open the webpage for which you need to copy the Authorization header.
+2. Right-click on the page and select "Inspect Element" or "Inspect". This will open the developer tools panel.
+3. In the developer tools panel, find the "Network" tab and switch to it.
+4. Refresh the page to activate the recording of network requests.
+5. Find the relevant request in the request list. If there are many requests, you can use search or filters to locate the desired one.
+6. lick on the request to open its details.
+7. In the "Headers" section, find the Authorization header. Right-click on it and select "Copy value" or a similar command.
 
 # Internet Explorer:
-1. Откройте веб-страницу, для которой вам нужно скопировать заголовок Authorization.
-2. Щелкните правой кнопкой мыши на странице и выберите пункт "Исследовать элемент" или "Исследовать". Откроется панель инструментов разработчика.
-3. В панели инструментов разработчика найдите вкладку "Сеть" или "Network" и перейдите на нее.
-4. Обновите страницу, чтобы активировать запись сетевых запросов.
-5. Найдите нужный запрос в списке запросов. Если запросов много, можно воспользоваться поиском или фильтрами для нахождения нужного.
-6. Щелкните на запросе, чтобы открыть его детали.
-7. В разделе "Заголовки" или "Headers" найдите заголовок Authorization. Щелкните на нем правой кнопкой мыши и выберите пункт "Скопировать" или аналогичную команду.
+1. Open the webpage for which you need to copy the Authorization header.
+2. Right-click on the page and select "Inspect Element" or "Inspect". This will open the developer tools panel.
+3. In the developer tools panel, find the "Network" tab and switch to it.
+4. Refresh the page to activate the recording of network requests.
+5. Find the relevant request in the request list. If there are many requests, you can use search or filters to locate the desired one.
+6. Click on the request to open its details.
+7. In the "Headers" section, find the Authorization header. Right-click on it and select "Copy" or a similar command.
