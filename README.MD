@@ -1,4 +1,4 @@
-# Golf Store Parser
+# golfstore-parser
 
 This is a simple parser for retrieving data about products from a golf store. It utilizes the store's API and saves the retrieved data into JSON files for each product category.
 
